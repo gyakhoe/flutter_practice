@@ -17,7 +17,7 @@ void main() {
     });
 
     blocTest<CalculatorBloc, CalculatorState>(
-      'emits [ClaculatorResultSuccessful(10.0)] when ddButtonTapped(5, 5) is added.',
+      'emits [ClaculatorResultSuccessful(10.0)] when addButtonTapped(5, 5) is added.',
       build: () => calculatorBloc,
       act: (bloc) => bloc.add(const AddButtonTapped(5, 5)),
       expect: () => const <CalculatorState>[CalculatorResultSuccessful(10.0)],
