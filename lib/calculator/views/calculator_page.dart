@@ -1,32 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_practice/calculator/logic/operation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_practice/calculator/bloc/calculator_bloc.dart';
 
-class CalculatorPage extends StatefulWidget {
-  const CalculatorPage({Key? key}) : super(key: key);
+class CalculatorPage extends StatelessWidget {
+  CalculatorPage({Key? key}) : super(key: key);
 
-  @override
-  State<CalculatorPage> createState() => _CalculatorPageState();
-}
-
-class _CalculatorPageState extends State<CalculatorPage> {
-  late final TextEditingController firstOperandController;
-  late final TextEditingController secondOperandController;
-  final operation = Operation();
-  double? result;
-
-  @override
-  void initState() {
-    firstOperandController = TextEditingController();
-    secondOperandController = TextEditingController();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    firstOperandController.dispose();
-    secondOperandController.dispose();
-    super.dispose();
-  }
+  final TextEditingController firstOperandController = TextEditingController();
+  final TextEditingController secondOperandController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +19,16 @@ class _CalculatorPageState extends State<CalculatorPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                key: const ValueKey('result'),
-                result?.toString() ?? 'Result',
-                style: Theme.of(context).textTheme.headline3,
+              BlocBuilder<CalculatorBloc, CalculatorState>(
+                builder: (context, state) {
+                  if (state is ClaculatorResultFailure) {
+                    return resultText(state.message, context);
+                  } else if (state is CalculatorResultSuccessful) {
+                    return resultText(state.result.toString(), context);
+                  }
+
+                  return resultText('Result', context);
+                },
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -77,56 +63,42 @@ class _CalculatorPageState extends State<CalculatorPage> {
                   MaterialButton(
                     color: Theme.of(context).primaryColorLight,
                     onPressed: () {
-                      setState(() {
-                        result = operation
-                            .sum(
-                                operand1:
-                                    int.parse(firstOperandController.text),
-                                operand2:
-                                    int.parse(secondOperandController.text))
-                            .toDouble();
-                      });
+                      BlocProvider.of<CalculatorBloc>(context).add(
+                        AddButtonTapped(
+                          int.parse(firstOperandController.text),
+                          int.parse(secondOperandController.text),
+                        ),
+                      );
                     },
                     child: const Text('+'),
                   ),
                   MaterialButton(
                     color: Theme.of(context).primaryColorLight,
                     onPressed: () {
-                      setState(() {
-                        result = operation
-                            .difference(
-                                operand1:
-                                    int.parse(firstOperandController.text),
-                                operand2:
-                                    int.parse(secondOperandController.text))
-                            .toDouble();
-                      });
+                      BlocProvider.of<CalculatorBloc>(context).add(
+                          SubtractButtonTapped(
+                              int.parse(firstOperandController.text),
+                              int.parse(secondOperandController.text)));
                     },
                     child: const Text('-'),
                   ),
                   MaterialButton(
                     color: Theme.of(context).primaryColorLight,
                     onPressed: () {
-                      setState(() {
-                        result = operation
-                            .product(
-                                operand1:
-                                    int.parse(firstOperandController.text),
-                                operand2:
-                                    int.parse(secondOperandController.text))
-                            .toDouble();
-                      });
+                      BlocProvider.of<CalculatorBloc>(context).add(
+                          MultiplyButtonTapped(
+                              int.parse(firstOperandController.text),
+                              int.parse(secondOperandController.text)));
                     },
                     child: const Text('*'),
                   ),
                   MaterialButton(
                     color: Theme.of(context).primaryColorLight,
                     onPressed: () {
-                      setState(() {
-                        result = operation.division(
-                            operand1: int.parse(firstOperandController.text),
-                            operand2: int.parse(secondOperandController.text));
-                      });
+                      BlocProvider.of<CalculatorBloc>(context).add(
+                          DivideButtonTapped(
+                              int.parse(firstOperandController.text),
+                              int.parse(secondOperandController.text)));
                     },
                     child: const Text('/'),
                   ),
@@ -136,6 +108,13 @@ class _CalculatorPageState extends State<CalculatorPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Text resultText(String result, BuildContext context) {
+    return Text(
+      result,
+      style: Theme.of(context).textTheme.headline3,
     );
   }
 }

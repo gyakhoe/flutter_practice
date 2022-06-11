@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_practice/calculator/bloc/calculator_bloc.dart';
+import 'package:flutter_practice/calculator/data/repositories/operation_repository.dart';
 import 'package:flutter_practice/calculator/views/calculator_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   testWidgets('Calculator page smoke test', (WidgetTester tester) async {
     // Build widget to test for
-    await tester.pumpWidget(const MaterialApp(
-      home: CalculatorPage(),
+    await tester.pumpWidget(MaterialApp(
+      home: BlocProvider(
+        create: (context) =>
+            CalculatorBloc(operationRepository: OperationRepository()),
+        child: CalculatorPage(),
+      ),
     ));
 
     // Test the widget built

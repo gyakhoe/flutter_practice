@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_practice/calculator/bloc/calculator_bloc.dart';
+import 'package:flutter_practice/calculator/data/repositories/operation_repository.dart';
 import 'package:flutter_practice/calculator/views/calculator_page.dart';
 
 void main() {
@@ -25,7 +28,12 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const CalculatorPage(),
+      home: BlocProvider(
+        create: (context) => CalculatorBloc(
+          operationRepository: OperationRepository(),
+        ),
+        child: CalculatorPage(),
+      ),
     );
   }
 }

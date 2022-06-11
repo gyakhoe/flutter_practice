@@ -1,9 +1,9 @@
-import 'package:flutter_practice/calculator/calculator.dart';
+import 'package:flutter_practice/calculator/data/repositories/operation_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Calculator Operations test -', () {
-    final operation = Operation();
+    final operation = OperationRepository();
     test('Testing SUM', () {
       final sum = operation.sum(operand1: 1, operand2: 1);
       expect(sum, 2);

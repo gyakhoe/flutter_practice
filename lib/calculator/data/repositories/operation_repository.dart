@@ -1,4 +1,4 @@
-class Operation {
+class OperationRepository {
   int sum({required int operand1, required int operand2}) {
     return operand1 + operand2;
   }
